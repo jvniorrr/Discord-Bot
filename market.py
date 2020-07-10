@@ -1,6 +1,11 @@
-import requests, json, logging
+import requests, json, logging, discord
 
 class StockX():
+    """Class that searches StockX using Algolia's search engine / API, using the keywords provided by user
+    Parameters
+    ----------
+    - Keyword: Joins the keywords provided and uses those for searching the API. * (Can be multiple kwds)
+    """
     def __init__(self, keyword):
         self.keyword = str(keyword.lower())
         self.keywordSearch = str(self.keyword).replace(' ', '%20')
@@ -312,9 +317,160 @@ class StockX():
                 info = None
         return info
 
+class GOAT():
+    """Class that searches GOAT (AirGOAT) using Algolia's search engine / API, using the keywords provided by user
+    Parameters
+    ----------
+    - Keyword: Joins the keywords provided and uses those for searching the API. * (Can be multiple kwds)
+    """
+    def __init__(self, keyword):
+        self.keyword = str(keyword.lower())
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'}
+        logging.basicConfig(format='%(asctime)s[%(levelname)s] - %(message)s', level=logging.INFO, datefmt='[%I:%M:%S %p %Z]')
+        logging.info(f'Searching GOAT for: {str(self.keyword).title()}')
+
+    def asksAPI(self, slug):
+        """Gets ask info on product requested by user
+        Parameters
+        ----
+        - Slug: the urlKey passed from algolia API
+        """
+        # asks API from goat
+        try:
+            asksAPI = f'https://www.goat.com/web-api/v1/product_variants?productTemplateId={slug}'
+            bids = requests.get(asksAPI, headers=self.headers).json()
+
+            sizes = []
+            for size in bids:
+                if size['shoeCondition'] == 'new_no_defects' and size['boxCondition'] == 'good_condition':
+                    if size['size'] not in sizes:
+                        option = dict()
+                        option['size'] = size['size']
+                        option['lowestprice'] = f"${str(float(size['lowestPriceCents']['amount']) * .01)[:-2]}"
+                        sizes.append(option)
+            return sizes
+        except Exception:
+            return None
+
+    def set_embed(self, info: dict):
+        print(info)
+        info = json.loads(str(info))
+        try:
+            embed = discord.Embed(color=0x2F3136)
+            authUrl = 'https://cdn.discordapp.com/attachments/661223352115003402/731014001885970502/goat.png'
+            embed.set_author(name='GOAT', url='https://www.goat.com', icon_url=authUrl)
+            embed.add_field(name='**Title**', value=f"[{info['name']}]({info['url']})",inline=False)
+            info = f"__**Retail**__: `{info['retail']}`\n__**SKU**__: {info['sku']}\n__**Release**__: `{info['release']}`"
+            embed.add_field(name='**Info**', value=info, inline=False)
+            embed.add_field(name='\u200B', value='\u200B',inline=False)
+        except Exception:
+            pass
+
+        print(info['asks'])
+        if len(info['asks']) >= 7:
+            try:
+                asks1 = ''
+                for ask in info['asks'][:7]:
+                    asks1 += f"[**{str(ask['size'])}** • {ask['lowestprice']}]({info['url']})\n"
+                embed.add_field(name='**Asks**', value=asks1)
+                asks2 = ''
+                for ask in info['asks'][7:14]:
+                    asks2 += f"[**{str(ask['size'])}** • {ask['lowestprice']}]({info['url']})\n"
+                embed.add_field(name='**Asks**', value=asks2)
+                asks3 = ''
+                for ask in info['asks'][14:21]:
+                    asks3 += f"[**{str(ask['size'])}** • {ask['lowestprice']}]({info['url']})\n"
+                embed.add_field(name='**Asks**', value=asks3, inline=True)
+            except Exception:
+                pass
+        else:
+            try:
+                asks1 = ''
+                for ask in info['asks']:
+                    asks1 += f"[**{str(ask['size'])}** • {ask['lowestprice']}]({info['url']})\n"
+                embed.add_field(name='**Asks**', value=asks1)
+            except Exception:
+                pass
+        newFile = discord.Embed.to_dict(embed)
+        print(newFile)
+        
+
+
+
+
+
+    def offersAPI(self, id):
+        asksAPI = f'https://www.goat.com/api/v1/highest_offers?productTemplateId={id}'
+        bids = requests.get(asksAPI, headers=self.headers).json()
+        # print(bids)
+
+
+    def info(self,slug):
+        """Grabs info about the product being polled
+        Parameters
+        --------
+        - Slug: the urlKey passed from algolia API
+        """
+        # general info about the product
+        try:
+            generalAPI = f"https://www.goat.com/api/v1/product_templates/{slug}/show_v2"
+            general = requests.get(generalAPI, headers=self.headers).json()
+            info = dict()
+            info['name'] = general['name']
+            info['release'] = str(general['releaseDate'])[:10]
+            info['picture'] = general['pictureUrl']
+            info['url'] = f'https://www.goat.com/sneakers/{general["slug"]}/available-sizes'
+            info['sku'] = str(general['sku']).replace(' ', '-')
+            info['retail'] = f"${str(int(general['specialDisplayPriceCents']) * .01)[:-2]}"
+            info['lowestprice'] = f"${str(int(general['lowestPriceCents']) * .01)[:-2]}"
+
+            return info
+        except Exception:
+            return None
+
+    def main(self):
+        """My method but doesnt seem to return all the info about the shoe like lowest asks / bids per size."""
+
+        # set the search parameters
+        data = {"params":f"query=&query={self.keyword}&facetFilters=(product_category%3Ashoes)&page=0&hitsPerPage=5"}
+
+        # set the url already set with the parameters passed. 
+        url = 'https://2fwotdvm2o-dsn.algolia.net/1/indexes/product_variants_v2_trending_purchase/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%203.25.1&x-algolia-application-id=2FWOTDVM2O&x-algolia-api-key=ac96de6fef0e02bb95d433d8d5c7038a'
+
+        # make a post request to the API and have info returned for GOAT.com website. (info on products)
+        response = requests.post(url, headers=self.headers, json=data)
+        if response.ok:
+            response = response.json()
+            if len(response["hits"]) != 0:
+                slug = response["hits"][0]["slug"]
+                prodID = response["hits"][0]["product_template_id"]
+                # info on the product
+                info = self.info(slug)
+                # offers = self.offersAPI(prodID)
+                if info != None:
+                    logging.info(f"{info['name']} was found...")
+                    # asks on the product
+                    prodInfo = dict()
+                    prodInfo["name"] = info['name']
+                    prodInfo["release"] = info['release']
+                    prodInfo["picture"] = info['picture']
+                    prodInfo["url"] = info['url']
+                    prodInfo["sku"] = info['sku']
+                    prodInfo["retail"] = info['retail']
+                    prodInfo["lowestprice"] = info['lowestprice']
+                    asks = self.asksAPI(slug)
+                    if asks != None:
+                        prodInfo["asks"] = asks
+                    i = self.set_embed(prodInfo)
+                        # return prodInfo
+            else:
+                return None
+        else:
+            return None
+
 
 if __name__ == '__main__':
     keyword = 'air pods'
-    keyword = 'kaws figure'
-    c = StockX(keyword=keyword).main()
-    print(c)
+    keyword = 'yeezy'
+    c = GOAT(keyword=keyword).main()
+    # print(c)
