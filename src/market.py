@@ -9,6 +9,7 @@ class StockX():
     def __init__(self, keyword):
         self.keyword = str(keyword.lower())
         self.keywordSearch = str(self.keyword).replace(' ', '%20')
+        self.red = 0xd40000
         self.headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'}
         logging.basicConfig(format='%(asctime)s[%(levelname)s] - %(message)s', level=logging.INFO, datefmt='[%I:%M:%S %p %Z]')
         logging.info('Searching StockX for: ' + str(self.keyword).title())
@@ -278,6 +279,84 @@ class StockX():
     
         return info
 
+    def set_embed(self, info):
+        if info != None:
+            embed = discord.Embed(color=0x09A05E)
+            authURL = 'https://media.discordapp.net/attachments/661223352115003402/730649326338048000/stockX.png'
+            embed.set_author(name='StockX', url='https://www.stockx.com', icon_url=authURL)
+            embed.set_thumbnail(url=info['picture'])
+            name = f"[{info['name']}]({info['url']})"
+            embed.add_field(name='**Title**', value=name, inline=False)
+            if info['category'] == 'streetwear' or info['category'] == 'collectibles':
+                snkrInfo = f"__**Retail**__: `{info['retail']}`\n__**Brand**__: {info['brand']}\n__**Release**__: `{info['release']}`"
+            elif info['category'] == 'sneakers':
+                snkrInfo = f"__**Retail**__: `{info['retail']}`\n__**SKU**__: {info['brand']}\n__**Release**__: `{info['release']}`"
+            
+            embed.add_field(name='**Info**', value=snkrInfo, inline=False)
+            if info['lastsale'] != None:
+                recentSale = f"**__Sale Price__**: {info['lastsale']['price']}\n**__Sale Date__**: {info['lastsale']['date']}\n**__Size__**: {info['lastsale']['size']}"
+                embed.add_field(name='**Recent Sale**', value=recentSale, inline=False)
+            embed.add_field(name='\u200B', value='\u200B',inline=False)
+            try: 
+                embed.add_field(name='**Highest Bid**', value=f"{info['highestbid']}", inline=True)
+                embed.add_field(name='**Lowest Ask**', value=f"{info['lowestask']}", inline=True)
+            except Exception:
+                pass
+            embed.add_field(name='\u200B', value='\u200B',inline=False)
+
+            try:
+                if len(info['asks']) > 7:
+                    asks1 = ''
+                    for ask in info['asks'][:7]:
+                        asks1 += f"[**{str(ask['size'])}** • ({ask['lowestask']})]({info['url']})\n"
+                    try:
+                        if asks1 != '':
+                            embed.add_field(name='**Asks**', value=asks1)
+                    except Exception:
+                        pass
+
+                    asks2 = ''
+                    try:
+                        for ask in info['asks'][7:14]:
+                            asks2 += f"[**{str(ask['size'])}** • ({ask['lowestask']})]({info['url']})\n"
+                        try:
+                            if asks2 != '':
+                                embed.add_field(name='**Asks**', value=asks2)
+                        except Exception:
+                            pass
+                    except Exception:
+                        pass
+
+                    asks3 = ''
+                    try:
+                        for ask in info['asks'][14:21]:
+                            asks3 += f"[**{str(ask['size'])}** • ({ask['lowestask']})]({info['url']})\n"
+                        try:
+                            if asks3 != '':
+                                embed.add_field(name='**Asks**', value=asks3, inline=True)
+                        except Exception:
+                            pass
+                    except Exception:
+                        pass
+                else:
+                    asks1 = ''
+                    for ask in info['asks']:
+                        asks1 += f"[**{str(ask['size'])}** • ({ask['lowestask']})]({info['url']})\n"
+                    try:
+                        if asks1 != '':
+                            embed.add_field(name='**Asks**', value=asks1)
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+        else:
+            title = '**No results were found. Please use the appropiate format and keywords. Examples below**'
+            embed = discord.Embed(color=0xd40000, title=title)
+            authURL = 'https://media.discordapp.net/attachments/661223352115003402/730649326338048000/stockX.png'
+            embed.set_author(name='StockX', url='https://www.stockx.com', icon_url=authURL)
+        embed = embed.to_dict()
+        return embed
+
     
     def main(self):
         """My method but doesnt seem to return all the info about the shoe like lowest asks / bids per size."""
@@ -315,10 +394,12 @@ class StockX():
             else:
                 logging.info(f'No products found matching {str(self.keyword).title()}')
                 info = None
-        return info
+        i = self.set_embed(info)
+        return i
 
 class GOAT():
-    """Class that searches GOAT (AirGOAT) using Algolia's search engine / API, using the keywords provided by user
+    """Class that searches GOAT (AirGOAT) using Algolia's search engine / API, using the keywords provided by user.
+    Returns an embed dictionary to be passed to discord bot.
     Parameters
     ----------
     - Keyword: Joins the keywords provided and uses those for searching the API. * (Can be multiple kwds)
@@ -352,57 +433,80 @@ class GOAT():
         except Exception:
             return None
 
-    def set_embed(self, info: dict):
-        print(info)
-        info = json.loads(str(info))
-        try:
-            embed = discord.Embed(color=0x2F3136)
+    def neg_embed(self):
+        """Negative embed for response that return None / nothing. Only thing to do is set footer the way I like it in bot & the description key"""
+    
+        # desc = 'na'
+        title = '**No results were found. Please use the appropiate format and keywords. Examples below**'
+        embed = discord.Embed(color=0xd40000, title=title)
+        authUrl = 'https://cdn.discordapp.com/attachments/661223352115003402/731014001885970502/goat.png'
+        embed.set_author(name='GOAT', url='https://www.goat.com', icon_url=authUrl)
+        i = embed.to_dict()
+        return i
+
+    def set_embed(self, info):
+        if info != None:
+            try:
+                embed = discord.Embed(color=0x2F3136)
+                authUrl = 'https://cdn.discordapp.com/attachments/661223352115003402/731014001885970502/goat.png'
+                embed.set_author(name='GOAT', url='https://www.goat.com', icon_url=authUrl)
+                embed.set_thumbnail(url=info['picture'])
+                embed.add_field(name='**Title**', value=f"[{info['name']}]({info['url']})",inline=False)
+                snkrInfo = f"__**Retail**__: `{info['retail']}`\n__**SKU**__: {info['sku']}\n__**Release**__: `{info['release']}`"
+                embed.add_field(name='**Info**', value=snkrInfo, inline=False)
+                embed.add_field(name='\u200B', value='\u200B',inline=False)
+            except Exception:
+                pass
+            if len(info['asks']) != 0:
+                if len(info['asks']) >= 7:
+                    try:
+                        asks1 = ''
+                        for ask in info['asks'][:7]:
+                            asks1 += f"[**{str(ask['size'])}** • {ask['lowestprice']}]({info['url']})\n"
+                        if asks1 != '':
+                            embed.add_field(name='**Asks**', value=asks1)
+                    except Exception:
+                        pass
+                    try:
+                        asks2 = ''
+                        for ask in info['asks'][7:14]:
+                            asks2 += f"[**{str(ask['size'])}** • {ask['lowestprice']}]({info['url']})\n"
+                        if asks2 != '':
+                            embed.add_field(name='**Asks**', value=asks2)
+                    except Exception:
+                        pass
+                    try:
+                        asks3 = ''
+                        for ask in info['asks'][14:21]:
+                            asks3 += f"[**{str(ask['size'])}** • {ask['lowestprice']}]({info['url']})\n"
+                        if asks3 != '':
+                            embed.add_field(name='**Asks**', value=asks3, inline=True)
+                    except Exception:
+                        pass
+                    
+                else:
+                    try:
+                        asks1 = ''
+                        for ask in info['asks']:
+                            asks1 += f"[**{str(ask['size'])}** • {ask['lowestprice']}]({info['url']})\n"
+                        if asks3 != '':
+                            embed.add_field(name='**Asks**', value=asks1)
+                    except Exception:
+                        pass
+            newFile = embed.to_dict()
+        else:
+            title = '**No results were found. Please use the appropiate format and keywords. Examples below**'
+            embed = discord.Embed(color=0xd40000, title=title)
             authUrl = 'https://cdn.discordapp.com/attachments/661223352115003402/731014001885970502/goat.png'
             embed.set_author(name='GOAT', url='https://www.goat.com', icon_url=authUrl)
-            embed.add_field(name='**Title**', value=f"[{info['name']}]({info['url']})",inline=False)
-            info = f"__**Retail**__: `{info['retail']}`\n__**SKU**__: {info['sku']}\n__**Release**__: `{info['release']}`"
-            embed.add_field(name='**Info**', value=info, inline=False)
-            embed.add_field(name='\u200B', value='\u200B',inline=False)
-        except Exception:
-            pass
-
-        print(info['asks'])
-        if len(info['asks']) >= 7:
-            try:
-                asks1 = ''
-                for ask in info['asks'][:7]:
-                    asks1 += f"[**{str(ask['size'])}** • {ask['lowestprice']}]({info['url']})\n"
-                embed.add_field(name='**Asks**', value=asks1)
-                asks2 = ''
-                for ask in info['asks'][7:14]:
-                    asks2 += f"[**{str(ask['size'])}** • {ask['lowestprice']}]({info['url']})\n"
-                embed.add_field(name='**Asks**', value=asks2)
-                asks3 = ''
-                for ask in info['asks'][14:21]:
-                    asks3 += f"[**{str(ask['size'])}** • {ask['lowestprice']}]({info['url']})\n"
-                embed.add_field(name='**Asks**', value=asks3, inline=True)
-            except Exception:
-                pass
-        else:
-            try:
-                asks1 = ''
-                for ask in info['asks']:
-                    asks1 += f"[**{str(ask['size'])}** • {ask['lowestprice']}]({info['url']})\n"
-                embed.add_field(name='**Asks**', value=asks1)
-            except Exception:
-                pass
-        newFile = discord.Embed.to_dict(embed)
-        print(newFile)
+            newFile = embed.to_dict()
+        return newFile
         
 
-
-
-
-
-    def offersAPI(self, id):
-        asksAPI = f'https://www.goat.com/api/v1/highest_offers?productTemplateId={id}'
-        bids = requests.get(asksAPI, headers=self.headers).json()
-        # print(bids)
+    # def offersAPI(self, id):
+    #     asksAPI = f'https://www.goat.com/api/v1/highest_offers?productTemplateId={id}'
+    #     bids = requests.get(asksAPI, headers=self.headers).json()
+    #     # print(bids)
 
 
     def info(self,slug):
@@ -423,6 +527,9 @@ class GOAT():
             info['sku'] = str(general['sku']).replace(' ', '-')
             info['retail'] = f"${str(int(general['specialDisplayPriceCents']) * .01)[:-2]}"
             info['lowestprice'] = f"${str(int(general['lowestPriceCents']) * .01)[:-2]}"
+            asks = self.asksAPI(general['slug'])
+            if asks != None:
+                info["asks"] = asks
 
             return info
         except Exception:
@@ -439,38 +546,39 @@ class GOAT():
 
         # make a post request to the API and have info returned for GOAT.com website. (info on products)
         response = requests.post(url, headers=self.headers, json=data)
+        # make sure the request recieved a proper response / ok status
         if response.ok:
             response = response.json()
             if len(response["hits"]) != 0:
-                slug = response["hits"][0]["slug"]
-                prodID = response["hits"][0]["product_template_id"]
-                # info on the product
-                info = self.info(slug)
-                # offers = self.offersAPI(prodID)
-                if info != None:
-                    logging.info(f"{info['name']} was found...")
-                    # asks on the product
-                    prodInfo = dict()
-                    prodInfo["name"] = info['name']
-                    prodInfo["release"] = info['release']
-                    prodInfo["picture"] = info['picture']
-                    prodInfo["url"] = info['url']
-                    prodInfo["sku"] = info['sku']
-                    prodInfo["retail"] = info['retail']
-                    prodInfo["lowestprice"] = info['lowestprice']
-                    asks = self.asksAPI(slug)
-                    if asks != None:
-                        prodInfo["asks"] = asks
-                    i = self.set_embed(prodInfo)
-                        # return prodInfo
+                hits = response['hits'][0]
+                if hits['product_type'] == 'sneakers':
+                    tempName = hits['name']
+                    slug = hits["slug"]
+                    # prodID = hits["product_template_id"]
+                    # info on the product
+                    info = self.info(slug)
+
+                    # offers = self.offersAPI(prodID)
+                    if info != None:
+                        logging.info(f"{info['name']} was found")
+                    else:
+                        logging.debug("Error parsing GOAT API")
+
+                    newDict = self.set_embed(info)
+
+                
             else:
-                return None
+                logging.info(f"No results found for {str(self.keyword)}...")
+                newDict = self.set_embed(info=None)
         else:
-            return None
+            logging.error("Error retrieving a valid response from Algolia")
+            newDict = None
+
+        return newDict
 
 
 if __name__ == '__main__':
     keyword = 'air pods'
     keyword = 'yeezy'
     c = GOAT(keyword=keyword).main()
-    # print(c)
+    print(c)
