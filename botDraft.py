@@ -2,10 +2,14 @@ import discord
 # from shopify import AccountCreator, Address, BotBroker
 # from market import GOAT, StockX
 from src import market
+from src.botbroker import BotBroker
 import random, datetime, time, logging
 from discord.ext import commands
 import asyncio
 import os
+
+global failEmbedColor
+failEmbedColor = 0xd40000
 
 prefixes = ['.', '!']
 prefixes = '.'
@@ -93,5 +97,38 @@ async def goat(ctx, *search):
         await msg.edit(embed=newEmbed)
     else:
         await msg.edit('Beep Bop. Error within bot. Try again in a few.')
+
+@client.command(aliases=['bb', 'BotBroker', 'Botbroker'])
+async def botbroker(ctx, *args):
+    if len(args) != 0:
+        userInput = ' '.join(args)
+        bbImage = 'https://botbroker.io/favicon-96x96.png'
+        embed = discord.Embed( color=0xFF2440, url='https://botbroker.io', description=f'Searching BotBroker for {userInput.title()}...')
+        embed.set_author(name='Bot Broker', icon_url=bbImage, url='https://botbroker.io')
+        searchMsg = await ctx.channel.send(embed=embed)
+
+        bot = BotBroker(userInput).main()
+        x = datetime.datetime.now()
+        month = x.strftime("%m")
+        day = x.strftime("%d")
+        year = x.strftime("%Y")
+        footerDate = f"{month}-{day}-{year}"
+        now = datetime.datetime.now()
+        hour = now.strftime("%H")
+        mint = now.strftime("%M")
+        sec = now.strftime("%S")
+        if int(str(now.strftime('%H'))) >= 13:
+            hour = (int(now.strftime("%H")) - 12)
+            current_time = f"0{str(hour)}:{mint}:{sec} PM"
+        else:
+            current_time = f"{hour}:{mint}:{sec} AM"
+
+        newEmbed = discord.Embed.from_dict(bot)
+        newEmbed.set_footer(text=f'Requested by {ctx.author} • {current_time}', icon_url=bbImage)
+
+        await searchMsg.edit(embed=newEmbed)
+        logging.info('Sent bot info to bot / user')
+
+
 
 client.run('NzI0MDMzODM3MjY4NTk4ODM1.Xu6unw.T9JJFxn1YIDt9Qfgy86sgLdYVIc')
