@@ -1,6 +1,7 @@
 import discord
 from src.shopifyImports import *
 from src.faking import *
+from discord import ActivityType, Activity
 # from shopify import AccountCreator, Address, BotBroker
 # from market import GOAT, StockX
 from src import market
@@ -29,7 +30,11 @@ client.remove_command('help')
 @client.event
 async def on_ready():
     # await client.change_presence(activity = discord.Game(name='Monitoring Server'))
-    await client.change_presence(activity = discord.Activity(name='Monitoring Server'))
+    # actType = discord.ActivityType().watching
+    await client.change_presence(activity= Activity(
+        name="Users & Awaiting commands",
+        type=ActivityType.watching
+        ))
     logging.info(f'\n{str(client.user).upper()} bot is now online!')
 
 @client.event
@@ -63,7 +68,35 @@ ScottBot:"Scottbot", "Scottbt", "Scott bot"\nSwftAIO:"Swift", "SwiftAIO", "Swift
     await ctx.channel.send(f'{ctx.author.mention} Check your DM for information on the Help Command.')
     logging.info('"help" Command was successfully called with no erorrs.')
     
-    
+@client.command()
+async def kick(ctx, member: discord.Member, *, reason=None):
+    await member.kick(reason=reason)
+@kick.error
+async def kick_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("Member is a required argument that is missing.")
+    elif isinstance(error, commands.errors.CommandInvokeError):
+        await ctx.send("That member isnt in this guild. Provide a member in this channel.")
+    elif isinstance(error, commands.errors.BadArgument):
+        await ctx.send(f"Member not found.")
+
+@client.command(aliases=["avi"])
+async def avatar(ctx, member: discord.Member):
+    x = datetime.datetime.now(est).strftime("%I:%M:%S %p")
+    # footerDate = f"{x.strftime('%m')}-{x.strftime('%d')}-{x.strftime('%Y')}"
+    show_Avi =  discord.Embed(color=0x4EA3F1)
+    show_Avi.set_image(url='{}'.format(member.avatar_url))
+    show_Avi.set_footer(text=f"Requested by {ctx.author} • {x}", icon_url=f"{ctx.author.avatar_url}")
+
+    await ctx.send(embed=show_Avi)
+@avatar.error
+async def avatar_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("Member is a required argument that is missing.\n__Example__: `.avatar @user#1234`")
+    elif isinstance(error, commands.errors.CommandInvokeError):
+        await ctx.send("That member isnt in this guild. Provide a member in this channel.")
+    elif isinstance(error, commands.errors.BadArgument):
+        await ctx.send(f"Member not found.")
 
 @client.command()
 async def ping(ctx):
