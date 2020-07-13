@@ -3,7 +3,6 @@ import datetime, string, json, io, sys, random, os
 import requests
 from bs4 import BeautifulSoup
 from fake_headers import Headers
-# from dhooks import Embed, Webhook, File
 import discord
 import lxml.html
 
