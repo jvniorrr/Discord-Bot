@@ -3,6 +3,7 @@ import names, time, datetime, string
 from pytz import timezone
 import requests
 from fake_headers import Headers
+from bs4 import BeautifulSoup
 
 
 global  currentTime
@@ -22,12 +23,42 @@ class AccountCreator:
         - Webhook: Discord Webhook to send files when Accounts are created
         - Total: Integer value of accounts to be created on site. 
         """
-        self.site = site
+        if 'http://' in site:
+            self.site = str(site).replace('http://', '')
+        elif 'https://' in site:
+            self.site = str(site).replace('https://', '')
+        elif 'https' in site:
+            self.site = str(site).replace('https', '')
+        elif 'http' in site:
+            self.site = str(site).replace('http', '')
+        elif '//' in site:
+            self.site = str(site).split('//')[1]
+        else:
+            self.site = site
+        # self.site = site
+        self.proxies = self.get_proxy()
         self.email = email
         self.proxy = True
         self.total = total
+        self.headers = Headers(browser="chrome", os="mac").generate()
         logging.basicConfig(format='%(asctime)s[%(levelname)s] - %(message)s', level=logging.INFO, datefmt='[%I:%M:%S %p %Z]')
 
+    def check_ecommerce(self):
+        
+        returnVal = None
+        try:
+            r = requests.get(f'https://{self.site}/meta.json', headers=self.headers, proxies=self.proxies, timeout=15)
+            if (str(r.status_code) == '200'):
+                logging.info("Site user requested does seem to be Shopify based.")
+                returnVal = True
+            else:
+                logging.info("Site user requested does not seem to be Shopify based.")
+                returnVal = False
+        except Exception:
+            logging.error("There was an issue checking if the site thuser requested was shopify based or not.")
+            
+
+        return returnVal 
 
     def get_proxy(self):
         """Returns dictionary value of a proxy to use in request"""
@@ -139,54 +170,67 @@ class AccountCreator:
         logging.info(f"Initializing Account creator for {self.site}:")
         accountsCreated = []
 
-        if self.total > 25:
-            self.total = 25
-        for _ in range(self.total):
+        boool = self.check_ecommerce()
+        # boool = True
+        if boool == True:
+            if self.total > 25:
+                self.total = 25
+            for _ in range(self.total):
 
-            info = self.emailGen()
-            email = info["email"]
-            password = info["password"]
-            # proxy = accounts["proxyUse"]
+                info = self.emailGen()
+                email = info["email"]
+                password = info["password"]
+                # proxy = accounts["proxyUse"]
 
-            payload = {
-            'form_type': 'create_customer',
-            'utf8': '✓',
-            'customer[first_name]': info["firstName"],
-            'customer[last_name]': info["lastName"],
-            'customer[email]': email,
-            'customer[password]': password
-                }
+                payload = {
+                'form_type': 'create_customer',
+                'utf8': '✓',
+                'customer[first_name]': info["firstName"],
+                'customer[last_name]': info["lastName"],
+                'customer[email]': email,
+                'customer[password]': password
+                    }
 
-            # create the accounts asked for by use
-            t = True
-            while t:
-                try:
-                    headers = Headers(browser="mac", os="mac").generate()
-                    url = f"https://{self.site}/account/"
-                    if self.proxy:
-                        proxy = self.get_proxy()
-                        r = requests.post(url, data=payload, headers=headers, proxies=proxy, timeout=6)
-                    else:
-                        r = requests.post(url, data=payload, headers=headers)
+                # create the accounts asked for by use
+                t = True
+                while t:
+                    try:
+                        url = f"https://{self.site}/account/"
+                        if self.proxy:
+                            proxy = self.get_proxy()
+                            r = requests.post(url, data=payload, headers=self.headers, proxies=proxy, timeout=6)
+                        else:
+                            r = requests.post(url, data=payload, headers=self.headers)
 
-                    # check if response is ok              
-                    if r.ok:
-                        account = f"{email}:{password}"
-                        accountsCreated.append(account + "\n")
-                        t = False
-                    else:
-                        print("Retrying account.")
-                except Exception as e:
-                    print(e)
-                    break
-        SiteCr = (self.site).replace(".com","")
-        if len(accountsCreated) != 0:
-            filePath = self.accountsTxt(accounts=accountsCreated,site=SiteCr)
-            logging.info(f"Finished making {self.total} accounts.")
-        else:
-            filePath = None
+                        # check if response is ok              
+                        if r.ok:
+                            account = f"{email}:{password}"
+                            accountsCreated.append(account + "\n")
+                            t = False
+                        else:
+                            print("Retrying account.")
+                    except Exception as e:
+                        print(e)
+                        break
+            SiteCr = (self.site).replace(".com","")
+            if len(accountsCreated) != 0:
+                filePath = self.accountsTxt(accounts=accountsCreated,site=SiteCr)
+                logging.info(f"Finished making {self.total} accounts.")
+            else:
+                filePath = None
 
+        elif boool == False:
+            logging.info('The site the user provided does not seem to be Shopify based')
+            filePath = 'False'
+
+        
+        elif boool == None:
+            logging.error('There was an issue trying to see if the site the user requested was Shopify based or not: Connection Error.')
+            filePath = 'None'
         return filePath
+        
+
+
 
 
 
