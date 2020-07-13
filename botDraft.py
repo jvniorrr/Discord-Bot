@@ -70,7 +70,12 @@ ScottBot:"Scottbot", "Scottbt", "Scott bot"\nSwftAIO:"Swift", "SwiftAIO", "Swift
     
 @client.command()
 async def kick(ctx, member: discord.Member, *, reason=None):
+    logging.info(f'"kick" Command called by {ctx.author}')
+    await member.send(content=f'You are being kicked from {str(ctx.guild)} for reason: {reason}')
     await member.kick(reason=reason)
+    await ctx.message.delete(delay=5)
+    await ctx.channel.send(f"User {member} has been kicked for: {reason}", delete_after=60.0)
+    logging.info(f"{member} was kicked by {ctx.author} for reason: {reason}")
 @kick.error
 async def kick_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
@@ -228,13 +233,14 @@ async def botbroker(ctx, *args):
 async def accounts(ctx, site, email, total):
     logging.info(f'"accounts" Command Called by {ctx.author}.')
     await ctx.message.delete(delay=2)
-    if total != int or total == 0:
-        await ctx.channel.send(f'Please provide a valid integer value greater than 1for the last argument {ctx.author.mention}')
-        # logging.info(f'{ctx.author} did not provide valid arguments for the "accounts" command.')
-        logging.warning(f'"accounts" Command had an error when called by {ctx.author}: Invalid argument type for total value')
+    total = int(total)
+    # if total != int or total == 0:
+    #     await ctx.channel.send(f'Please provide a valid integer value greater than 1 for the last argument {ctx.author.mention}')
+    #     # logging.info(f'{ctx.author} did not provide valid arguments for the "accounts" command.')
+    #     logging.warning(f'"accounts" Command had an error when called by {ctx.author}: Invalid argument type for total value')
 
 
-    elif (len(email) > 1) and (len(site) > 1):
+    if (len(email) > 1) and (len(site) > 1):
         initMsg = await ctx.channel.send(f"{ctx.author.mention} Initialized Shopify Acc Creator.")
         logging.info(f'"accounts" Command initialized by {ctx.author}.')
         await initMsg.delete(delay=2)
