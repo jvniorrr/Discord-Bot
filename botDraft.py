@@ -28,7 +28,8 @@ client.remove_command('help')
 # EVENTS
 @client.event
 async def on_ready():
-    await client.change_presence(activity = discord.Game(name='Monitoring Server'))
+    # await client.change_presence(activity = discord.Game(name='Monitoring Server'))
+    await client.change_presence(activity = discord.Activity(name='Monitoring Server'))
     logging.info(f'\n{str(client.user).upper()} bot is now online!')
 
 @client.event
@@ -50,8 +51,8 @@ async def help(ctx):
     embed.set_author(name='Help')
     embed.add_field(name='__stockx__', value='Searches StockX for query provided by user (Searches collectibles, streetwear, and sneakers)', inline=False)
     embed.add_field(name='__goat__', value='Searches Goat for query provided by user (Searches sneakers)', inline=False)
-    bbMSG = f'''CyberAIO: "Cyba", "Cyber", "CyberAIO", "Cyber AIO\nPrismAIO: "Prism", "PrismAIO", "Prism AIO"\nBalko:"Balko","Balko AIO", "BalkoAIO\nPhantom:"Phantom", "Phantom AIO", "PhantomAIO"\nDashe:"Dashe","Dashe AIO", "DasheAIO"
-Splashforce:"Splash", "Splashforce", "SF"\nProject Destroyer: "PD", "Project Destroyer", "ProjectDestroyer"\nWrath:"Wrath", "WrathAIO", "Wrath AIO"\nMekPreme:"Mek", "MekPreme", "Mek Preme"\nAdept:"Adept", "AdeptPreme", "Adept Preme"\nVelox:"Velox", "Vox"
+    bbMSG = f'''CyberAIO: "Cyba", "Cyber", "CyberAIO", "Cyber AIO"\nPrismAIO: "Prism", "PrismAIO", "Prism AIO"\nBalko:"Balko","Balko AIO", "BalkoAIO\nPhantom:"Phantom", "Phantom AIO", "PhantomAIO"\nDashe:"Dashe","Dashe AIO", "DasheAIO"
+Splashforce:"Splash", "Splashforce", "SF", "Splash Force"\nProject Destroyer: "PD", "Project Destroyer", "ProjectDestroyer"\nWrath:"Wrath", "WrathAIO", "Wrath AIO"\nMekPreme:"Mek", "MekPreme", "Mek Preme"\nAdept:"Adept", "AdeptPreme", "Adept Preme"\nVelox:"Velox", "Vox"
 ScottBot:"Scottbot", "Scottbt", "Scott bot"\nSwftAIO:"Swift", "SwiftAIO", "Swift"\nTohru:"Tohru", "Tohru AIO", "TohruAIO"\nGhost:"Ghost", "GhostSNKRS"\nSneakercopter:"SC", "Sneakercopter",\nHastey:"Hastey", "Hasty"\nSoleAIO:"SoleAIO", "Sole"'''
     embed.add_field(name='__botbroker__', value=f'Searches botbroker for a bot and returns its info\n**Valid search parameters:**```{bbMSG}```\n__Example__`.botbroker cyber aio`', inline=False)
     embed.add_field(name='__accounts__', value=f'Attempts to create an account on a shopify based site (Max of 25), 80% ish success rate currently:\n__Example__: `{prefixes}accounts undefeated.com catchall.com 5` **or** `{prefixes}accounts undefeated.com myemail@gmail.com 5`', inline=False)
@@ -59,6 +60,7 @@ ScottBot:"Scottbot", "Scottbt", "Scott bot"\nSwftAIO:"Swift", "SwiftAIO", "Swift
     embed.add_field(name='__dottrick__', value='Creates j¡gged emails (50) using Googles dot trick for you to avoid cancellations.\n__Example__`.dot example@gmail.com`', inline=False)
 
     await user.send(embed=embed)
+    await ctx.channel.send(f'{ctx.author.mention} Check your DM for information on the Help Command.')
     logging.info('"help" Command was successfully called with no erorrs.')
     
     

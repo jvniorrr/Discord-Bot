@@ -1,4 +1,4 @@
-import requests, json, logging, discord
+import requests, json, logging, discord, os, random
 
 class StockX():
     """Class that searches StockX using Algolia's search engine / API, using the keywords provided by user

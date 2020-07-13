@@ -218,7 +218,7 @@ class BotBroker:
                 elif 'dashe' in bot['name'].lower():
                     bot['nicknames'] = ['dashe', 'dashe aio', 'dasheaio']
                 elif 'splashforce' in bot['name'].lower():
-                    bot['nicknames'] = ['splash', 'Splashforce', 'sf']
+                    bot['nicknames'] = ['splash', 'splashforce', 'sf', 'splash force']
                 elif 'destroyer' in bot['name'].lower():
                     bot['nicknames'] = ['pd', 'project destroyer', 'projectdestroyer']
                 elif 'wrath' in bot['name'].lower():
@@ -280,7 +280,7 @@ class BotBroker:
                 elif 'dashe' in bot['name'].lower():
                     bot['nicknames'] = ['dashe', 'dashe aio', 'dasheaio']
                 elif 'splashforce' in bot['name'].lower():
-                    bot['nicknames'] = ['splash', 'Splashforce', 'sf']
+                    bot['nicknames'] = ['splash', 'splashforce', 'sf', 'splash force']
                 elif 'destroyer' in bot['name'].lower():
                     bot['nicknames'] = ['pd', 'project destroyer', 'projectdestroyer']
                 elif 'wrath' in bot['name'].lower():
