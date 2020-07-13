@@ -10,9 +10,37 @@ class StockX():
         self.keyword = str(keyword.lower())
         self.keywordSearch = str(self.keyword).replace(' ', '%20')
         self.red = 0xd40000
+        self.proxy = self.get_proxy()
         self.headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'}
         logging.basicConfig(format='%(asctime)s[%(levelname)s] - %(message)s', level=logging.INFO, datefmt='[%I:%M:%S %p %Z]')
         logging.info('Searching StockX for: ' + str(self.keyword).title())
+
+    def get_proxy(self):
+        """Returns dictionary value of a proxy to use in request"""
+        try:
+            cwDir = os.getcwd()
+            currentDir = os.path.join(str(cwDir), "proxies.txt")
+            proxies = open(currentDir).read().splitlines()
+        except TypeError:
+            print("File path not found, provide a valid one")
+            
+        proxy = random.choice(proxies)
+        split = proxy.split(":")
+        ip = split[0]
+        port = split[1]
+        try:
+            user = split[2]
+            password = split[3]
+            dict = {
+            "http": f"http://{user}:{password}@{ip}:{port}",
+            "https": f"https://{user}:{password}@{ip}:{port}",
+            }
+        except:
+            dict = {
+            "http": f"http://{ip}:{port}",
+            "https": f"https://{ip}:{port}",
+            }
+        return dict
 
 
     def StreetwearInfo(self, url):
@@ -110,7 +138,7 @@ class StockX():
         # grab prod info from StockX
         try:
             apiurl = f"https://stockx.com/api/products/{url}?includes=market,360&currency=USD"
-            response = requests.get(apiurl, headers=self.headers)
+            response = requests.get(apiurl, headers=self.headers,proxies=self.proxy)
             if response.ok:
                 response = response.json()
                 response = response['Product']
@@ -192,7 +220,7 @@ class StockX():
         # grab prod info from StockX
         try:
             apiurl = f"https://stockx.com/api/products/{url}?includes=market,360&currency=USD"
-            response = requests.get(apiurl, headers=self.headers)
+            response = requests.get(apiurl, headers=self.headers, proxies=self.proxies)
             if response.ok:
                 response = response.json()
                 response = response['Product']
@@ -406,9 +434,37 @@ class GOAT():
     """
     def __init__(self, keyword):
         self.keyword = str(keyword.lower())
+        self.proxies = self.get_proxy()
         self.headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'}
         logging.basicConfig(format='%(asctime)s[%(levelname)s] - %(message)s', level=logging.INFO, datefmt='[%I:%M:%S %p %Z]')
         logging.info(f'Searching GOAT for: {str(self.keyword).title()}')
+
+    def get_proxy(self):
+        """Returns dictionary value of a proxy to use in request"""
+        try:
+            cwDir = os.getcwd()
+            currentDir = os.path.join(str(cwDir), "proxies.txt")
+            proxies = open(currentDir).read().splitlines()
+        except TypeError:
+            print("File path not found, provide a valid one")
+            
+        proxy = random.choice(proxies)
+        split = proxy.split(":")
+        ip = split[0]
+        port = split[1]
+        try:
+            user = split[2]
+            password = split[3]
+            dict = {
+            "http": f"http://{user}:{password}@{ip}:{port}",
+            "https": f"https://{user}:{password}@{ip}:{port}",
+            }
+        except:
+            dict = {
+            "http": f"http://{ip}:{port}",
+            "https": f"https://{ip}:{port}",
+            }
+        return dict
 
     def asksAPI(self, slug):
         """Gets ask info on product requested by user
@@ -518,7 +574,7 @@ class GOAT():
         # general info about the product
         try:
             generalAPI = f"https://www.goat.com/api/v1/product_templates/{slug}/show_v2"
-            general = requests.get(generalAPI, headers=self.headers).json()
+            general = requests.get(generalAPI, headers=self.headers, proxies=self.proxies).json()
             info = dict()
             info['name'] = general['name']
             info['release'] = str(general['releaseDate'])[:10]
@@ -545,7 +601,7 @@ class GOAT():
         url = 'https://2fwotdvm2o-dsn.algolia.net/1/indexes/product_variants_v2_trending_purchase/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%203.25.1&x-algolia-application-id=2FWOTDVM2O&x-algolia-api-key=ac96de6fef0e02bb95d433d8d5c7038a'
 
         # make a post request to the API and have info returned for GOAT.com website. (info on products)
-        response = requests.post(url, headers=self.headers, json=data)
+        response = requests.post(url, headers=self.headers, proxies=self.proxies,json=data)
         # make sure the request recieved a proper response / ok status
         if response.ok:
             response = response.json()

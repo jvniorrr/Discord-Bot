@@ -11,7 +11,35 @@ class BotBroker:
     """Instance which returns the latest info on a particular Sneaker bot, based on user choice as long as its in th nicknames"""
     def __init__(self, bot):
         self.bot = bot.lower()
+        self.proxies = self.get_proxy()
         logging.basicConfig(format='%(asctime)s[%(levelname)s] - %(message)s', level=logging.INFO, datefmt='[%I:%M:%S %p %Z]')
+
+    def get_proxy(self):
+        """Returns dictionary value of a proxy to use in request"""
+        try:
+            cwDir = os.getcwd()
+            currentDir = os.path.join(str(cwDir), "proxies.txt")
+            proxies = open(currentDir).read().splitlines()
+        except TypeError:
+            print("File path not found, provide a valid one")
+            
+        proxy = random.choice(proxies)
+        split = proxy.split(":")
+        ip = split[0]
+        port = split[1]
+        try:
+            user = split[2]
+            password = split[3]
+            dict = {
+            "http": f"http://{user}:{password}@{ip}:{port}",
+            "https": f"https://{user}:{password}@{ip}:{port}",
+            }
+        except:
+            dict = {
+            "http": f"http://{ip}:{port}",
+            "https": f"https://{ip}:{port}",
+            }
+        return dict
 
     def set_embed(self, info):
         bbImage = 'https://botbroker.io/favicon-96x96.png'
@@ -146,14 +174,13 @@ class BotBroker:
         return embed
 
                 
-
     # - GET THE BOT PAGE FROM BB, AND RETURN PRODUCTS THAT ARE AVAILABLE / UNAVAILABLE
     def getPage(self):
         """Function that just goes to bot broker.io/bots link and returns html of it"""
         try:
             url = "https://botbroker.io/bots"
             headers = Headers(browser="chrome", os="mac").generate()
-            html = requests.get(url,headers=headers).text
+            html = requests.get(url,headers=headers, proxies=self.proxies).text
             return html
         except Exception as e:
             html = None
@@ -329,7 +356,7 @@ class BotBroker:
         -----------
         -link: the link of the bot to be checked on the botbroker site."""
         headers = Headers(browser='chrome', os='mac').generate()
-        r = requests.get(link, headers=headers).text
+        r = requests.get(link, headers=headers, proxies=self.proxies).text
         return r
 
 # - GET THE ASK PRICES AND THE BID PRICES OF THE BOT ASKED BY USER

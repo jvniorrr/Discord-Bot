@@ -46,7 +46,7 @@ async def help(ctx):
     logging.info(f'"help" Command Called by {ctx.author}.')
     user = ctx.author
     title = f"The prefix for {ctx.guild} is `{prefixes}`"
-    embed = discord.Embed(color=0x07E5FF,title=title)
+    embed = discord.Embed(color=0x4EA3F1,title=title)
     embed.set_author(name='Help')
     embed.add_field(name='__stockx__', value='Searches StockX for query provided by user (Searches collectibles, streetwear, and sneakers)', inline=False)
     embed.add_field(name='__goat__', value='Searches Goat for query provided by user (Searches sneakers)', inline=False)
