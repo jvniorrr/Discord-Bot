@@ -68,25 +68,25 @@ ScottBot:"Scottbot", "Scottbt", "Scott bot"\nSwftAIO:"Swift", "SwiftAIO", "Swift
     await ctx.channel.send(f'{ctx.author.mention} Check your DM for information on the Help Command.')
     logging.info('"help" Command was successfully called with no erorrs.')
     
-@client.command()
-async def kick(ctx, member: discord.Member, *, reason=None):
-    logging.info(f'"kick" Command called by {ctx.author}')
-    if member != client.user:
-        await member.send(content=f'You are being kicked from {str(ctx.guild)} for reason: {reason}')
-        await member.kick(reason=reason)
-        await ctx.message.delete(delay=5)
-        await ctx.channel.send(f"User {member} has been kicked for: {reason}", delete_after=60.0)
-        logging.info(f"{member} was kicked by {ctx.author} for reason: {reason}")
-    else:
-        await ctx.channel('Are you a clown :clown:. Why are you trying to kick me.')
-@kick.error
-async def kick_error(ctx, error):
-    if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("Member is a required argument that is missing.")
-    elif isinstance(error, commands.errors.CommandInvokeError):
-        await ctx.send("That member isnt in this guild. Provide a member in this channel.")
-    elif isinstance(error, commands.errors.BadArgument):
-        await ctx.send(f"Member not found.")
+# @client.command()
+# async def kick(ctx, member: discord.Member, *, reason=None):
+#     logging.info(f'"kick" Command called by {ctx.author}')
+#     if member != client.user:
+#         await member.send(content=f'You are being kicked from {str(ctx.guild)} for reason: {reason}')
+#         await member.kick(reason=reason)
+#         await ctx.message.delete(delay=5)
+#         await ctx.channel.send(f"User {member} has been kicked for: {reason}", delete_after=60.0)
+#         logging.info(f"{member} was kicked by {ctx.author} for reason: {reason}")
+#     else:
+#         await ctx.channel('Are you a clown :clown:. Why are you trying to kick me.')
+# @kick.error
+# async def kick_error(ctx, error):
+#     if isinstance(error, commands.MissingRequiredArgument):
+#         await ctx.send("Member is a required argument that is missing.")
+#     elif isinstance(error, commands.errors.CommandInvokeError):
+#         await ctx.send("That member isnt in this guild. Provide a member in this channel.")
+#     elif isinstance(error, commands.errors.BadArgument):
+#         await ctx.send(f"Member not found.")
 
 @client.command(aliases=["avi"])
 async def avatar(ctx, member: discord.Member):
