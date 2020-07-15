@@ -5,10 +5,12 @@ More updates to come
 Features:
 ```
 .goat = GOAT Product Search
+
 .stockx = StockX Product Search
+
 .botbroker {keywords} = Searches botbroker for bots and returns an embed with info.
 **Valid Keywords:**
-`CyberAIO: "Cyba", "Cyber", "CyberAIO", "Cyber AIO"
+CyberAIO: "Cyba", "Cyber", "CyberAIO", "Cyber AIO"
 PrismAIO: "Prism", "PrismAIO", "Prism AIO"
 Balko:"Balko","Balko AIO", "BalkoAIO
 Phantom:"Phantom", "Phantom AIO", "PhantomAIO"
@@ -25,10 +27,13 @@ Tohru:"Tohru", "Tohru AIO", "TohruAIO"
 Ghost:"Ghost", "GhostSNKRS"
 Sneakercopter:"SC", "Sneakercopter",
 Hastey:"Hastey", "Hasty"
-SoleAIO:"SoleAIO", "Sole"`
+SoleAIO:"SoleAIO", "Sole" 
+
 .accounts {website.com} {email} {total} = Creates accounts on shopify Based website.
 e
+
 .address = Creates j¡gged properties for user to avoid cancellation (4 Char j¡g)
+
 .dottrick {gmail} = Creates emails from 1 gmail, utilizing emails dot trick.
 ```
 
