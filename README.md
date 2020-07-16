@@ -3,9 +3,11 @@ Discord Bot introduction (learning). Has few features useful in Sneaker Scene. W
 More updates to come
 
 # Commands:
- **- .goat {keywords}** = GOAT Product Search
- **- .stockx {keywords}** = StockX Product Search
- **- .botbroker {keywords}** = Searches botbroker for bots and returns an embed with info.
+ **- .goat {keywords}**: GOAT Product Search
+ 
+ **- .stockx {keywords}**: StockX Product Search
+ 
+ **- .botbroker {keywords}** : Searches botbroker for bots and returns an embed with info.
    *Valid Keywords:*
    __CyberAIO__: "Cyba", "Cyber", "CyberAIO", "Cyber AIO"
    __PrismAIO__: "Prism", "PrismAIO", "Prism AIO"
@@ -25,16 +27,20 @@ More updates to come
    __Ghost__:"Ghost", "GhostSNKRS"
    __Sneakercopter__:"SC", "Sneakercopter",
    __Hastey__:"Hastey", "Hasty"
- **- .accounts {website.com} {email} {total}** = Creates accounts on shopify Based website.
+   
+ **- .accounts {website.com} {email} {total}**: Creates accounts on shopify Based website.
  e
- **- .address** = Creates j¡gged properties for user to avoid cancellation (4 Char j¡g)
- **- .dottrick {gmail}** = Creates emails from 1 gmail, utilizing emails dot trick.
+ 
+ **- .address**: Creates j¡gged properties for user to avoid cancellation (4 Char j¡g)
+ 
+ **- .dottrick {gmail}**: Creates emails from 1 gmail, utilizing emails dot trick.
 
 
 # TO-DO LIST
 | **Done** | **News** |
-|  |Add better handling |
-|  | Add threading to the Shopify function, as well as try to make it more successfull if possible|
-|  | Add threading if somehow possible to the bot, to be able to run commands twice (simultaneously) |
 | -------- | -------- |
+| ❌ | Add better handling |
+| ❌ | Add threading to the Shopify function, as well as try to make it more successfull if possible |
+| ❌ | Add threading if somehow possible to the bot, to be able to run commands twice (simultaneously) |
+| ❌  | Placeholder |
 
