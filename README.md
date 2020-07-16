@@ -9,7 +9,8 @@ More updates to come
  
  **- .botbroker {keywords}** : Searches botbroker for bots and returns an embed with info.
    ° *Valid Keywords:*
-	 ```CyberAIO: "Cyba", "Cyber", "CyberAIO", "Cyber AIO"
+	 ```
+	 CyberAIO: "Cyba", "Cyber", "CyberAIO", "Cyber AIO"
 	 PrismAIO: "Prism", "PrismAIO", "Prism AIO"
 	 Balko:"Balko","Balko AIO", "BalkoAIO
 	 Phantom:"Phantom", "Phantom AIO", "PhantomAIO"
@@ -25,8 +26,9 @@ More updates to come
 	 Tohru:"Tohru", "Tohru AIO", "TohruAIO"
 	 *Deprecated*
 	 Ghost:"Ghost", "GhostSNKRS"
-	 Sneakercopter:"SC", "Sneakercopter",
-	 Hastey:"Hastey", "Hasty"```
+	 Sneakercopter:"SC", "Sneakercopter"
+	 Hastey:"Hastey", "Hasty"
+	 ```
 
  **- .accounts {website.com} {email} {total}**: Creates accounts on shopify Based website.
  e
