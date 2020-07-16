@@ -9,24 +9,24 @@ More updates to come
  
  **- .botbroker {keywords}** : Searches botbroker for bots and returns an embed with info.
    ° *Valid Keywords:*
-			 CyberAIO: "Cyba", "Cyber", "CyberAIO", "Cyber AIO"
-			 PrismAIO: "Prism", "PrismAIO", "Prism AIO"
-			 Balko:"Balko","Balko AIO", "BalkoAIO
-			 Phantom:"Phantom", "Phantom AIO", "PhantomAIO"
-			 Dashe:"Dashe","Dashe AIO", "DasheAIO"
-			 Splashforce:"Splash", "Splashforce", "SF", "Splash Force"
-			 Project Destroyer: "PD", "Project Destroyer", "ProjectDestroyer"
-			 Wrath:"Wrath", "WrathAIO", "Wrath AIO"
-			 MekPreme:"Mek", "MekPreme", "Mek Preme"
-			 Adept:"Adept", "AdeptPreme", "Adept Preme"
-			 Velox:"Velox", "Vox"
-			 ScottBot:"Scottbot", "Scottbt", "Scott bot"
-			 SwftAIO:"Swift", "SwiftAIO", "Swift"
-			 Tohru:"Tohru", "Tohru AIO", "TohruAIO"
-			 *Deprecated*
-			 Ghost:"Ghost", "GhostSNKRS"
-			 Sneakercopter:"SC", "Sneakercopter",
-			 Hastey:"Hastey", "Hasty"
+	 ```CyberAIO: "Cyba", "Cyber", "CyberAIO", "Cyber AIO"
+	 PrismAIO: "Prism", "PrismAIO", "Prism AIO"
+	 Balko:"Balko","Balko AIO", "BalkoAIO
+	 Phantom:"Phantom", "Phantom AIO", "PhantomAIO"
+	 Dashe:"Dashe","Dashe AIO", "DasheAIO"
+	 Splashforce:"Splash", "Splashforce", "SF", "Splash Force"
+	 Project Destroyer: "PD", "Project Destroyer", "ProjectDestroyer"
+	 Wrath:"Wrath", "WrathAIO", "Wrath AIO"
+	 MekPreme:"Mek", "MekPreme", "Mek Preme"
+	 Adept:"Adept", "AdeptPreme", "Adept Preme"
+	 Velox:"Velox", "Vox"
+	 ScottBot:"Scottbot", "Scottbt", "Scott bot"
+	 SwftAIO:"Swift", "SwiftAIO", "Swift"
+	 Tohru:"Tohru", "Tohru AIO", "TohruAIO"
+	 *Deprecated*
+	 Ghost:"Ghost", "GhostSNKRS"
+	 Sneakercopter:"SC", "Sneakercopter",
+	 Hastey:"Hastey", "Hasty"```
 
  **- .accounts {website.com} {email} {total}**: Creates accounts on shopify Based website.
  e
