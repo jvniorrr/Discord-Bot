@@ -111,6 +111,22 @@ async def ping(ctx):
     logging.info(f'"ping" Command Called by {ctx.author}.')
     await ctx.send(f"Pong! {round(client.latency * 1000)}ms")
 
+@client.command()
+async def fees(ctx, fee):
+    x = datetime.datetime.now(est).strftime("%I:%M:%S %p")
+    fee = int(fee)
+    # if fee != int:
+    #     await ctx.channel.send(f'please provide an integer value to use the fee command')
+    # else:
+    c = Fees(fee).main()
+    if c != None:
+        embed = discord.Embed.from_dict(c)
+        embed.set_footer(text=f"Requested by {ctx.author} • {x}", icon_url=f"{ctx.author.avatar_url}")
+        await ctx.channel.send(embed=embed)
+    else:
+        await ctx.channel.send('Please send an integer value')
+    
+
 @client.command(aliases=['sx', 'stock'])
 async def stockx(ctx, *search):
     logging.info(f'"stockx" Command Called by {ctx.author}.')
