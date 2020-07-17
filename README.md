@@ -2,7 +2,7 @@
 Discord Bot introduction (learning). Has few features useful in Sneaker Scene. When running this bot, make sure to use python 3.5+ 
 More updates to come
 
-# Commands:
+#### Commands:
  **- .goat {keywords}**: GOAT Product Search
  
  **- .stockx {keywords}**: StockX Product Search
