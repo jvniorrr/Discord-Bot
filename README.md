@@ -8,7 +8,7 @@ More updates to come
  **- .stockx {keywords}**: StockX Product Search
  
  **- .botbroker {keywords}** : Searches botbroker for bots and returns an embed with info.
-   ° *Valid Keywords:*
+   - **Valid Keywords:**
 	 ```
 	 CyberAIO: "Cyba", "Cyber", "CyberAIO", "Cyber AIO"
 	 PrismAIO: "Prism", "PrismAIO", "Prism AIO"
@@ -41,8 +41,10 @@ More updates to come
 # TO-DO LIST
 | **Done** | **News** |
 | -------- | -------- |
+| ❌  | Add Twitter Success w/ delete ability |
+| ❌  | Add Twitter Success leaderboard (then in future mess with this) |
 | ❌ | Add better handling |
 | ❌ | Add threading to the Shopify function, as well as try to make it more successfull if possible |
 | ❌ | Add threading if somehow possible to the bot, to be able to run commands twice (simultaneously) |
-| ❌  | Placeholder |
+| ❌ | Placeholder |
 
