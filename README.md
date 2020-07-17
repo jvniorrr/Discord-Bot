@@ -31,7 +31,6 @@ More updates to come
 	 ```
 
  **- .accounts {website.com} {email} {total}**: Creates accounts on shopify Based website.
- e
  
  **- .address**: Creates j¡gged properties for user to avoid cancellation (4 Char j¡g)
  
