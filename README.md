@@ -40,10 +40,11 @@ More updates to come
 # TO-DO LIST
 | **Done** | **News** |
 | -------- | -------- |
-| ❌  | Add Twitter Success w/ delete ability |
-| ❌  | Add Twitter Success leaderboard (then in future mess with this) |
+| ❌ | Add Twitter Success w/ delete ability |
+| ❌ | Add Twitter Success leaderboard (then in future mess with this) |
 | ❌ | Add better handling |
 | ❌ | Add threading to the Shopify function, as well as try to make it more successfull if possible |
 | ❌ | Add threading if somehow possible to the bot, to be able to run commands twice (simultaneously) |
+| ❌ | Rework Botbroker module (likely complete rewrite) |
+| ❌ | Add reaction based roles |
 | ❌ | Placeholder |
-
